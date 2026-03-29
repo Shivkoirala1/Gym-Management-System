@@ -1,0 +1,16 @@
+ID: 12
+Name: yasoda koirala
+Location: biratnagar 8
+Phone: 987654567
+Email: snojhd@uj3ogmail.com
+Gender: Female
+DOB: 2025-Month-1
+Start Date: ramchandra koirala
+Attendance: 1
+Loyalty Points: 5.0
+Active Status: Inactive
+Referral Source: 
+Plan: basic
+Price: 6500.0
+Type: Regular Member
+------------------------
