@@ -58,4 +58,40 @@
         return String.format("Payment successful. Remaining amount to be paid: %.2f", remainingAmount);
     }
 
-    
+    public String calculateDiscount() { 
+        if (this.isFullPayment) {
+            this.discountAmount = premiumCharge * 0.10;
+            return String.format("Discount calculated successfully. Discounted amount: %.2f", discountAmount);
+        }
+        return "No discount available. Full payment required.";
+    }
+
+    public void revertPremiumMember(String removalReason) { 
+        super.resetMemberStatus();
+        this.personalTrainer = "";
+        this.isFullPayment = false;
+        this.paidAmount = 0;
+        this.discountAmount = 0;
+
+        // Now using the removal reason properly
+        System.out.println("Member removed for reason: " + removalReason);
+    }
+
+    @Override
+    public void markAttendance() { 
+        this.attendance++;
+        this.loyaltyPoints += 10;
+    }
+
+    @Override
+    public void displayMemberDetails() { 
+        super.displayMemberDetails();
+        System.out.println("Personal Trainer: " + personalTrainer);
+        System.out.println("Paid Amount: " + paidAmount);
+        System.out.println("Payment Status: " + (isFullPayment ? "Complete" : "Incomplete"));
+        System.out.println("Remaining Amount: " + (premiumCharge - this.paidAmount));
+        if (isFullPayment && discountAmount > 0) { 
+            System.out.println("Discount Amount: " + discountAmount);
+        }
+    }
+}
