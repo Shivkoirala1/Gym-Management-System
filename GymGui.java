@@ -160,4 +160,50 @@ public class GymGui {
                 // Save to File Button
                 JButton saveToFileBtn = new JButton("Save to File");
                 saveToFileBtn.setBounds(10, 340, 200, 30);
-                
+
+                saveToFileBtn.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                                try (BufferedWriter writer = new BufferedWriter(new FileWriter("gym_members.txt"))) {
+                                        for (GymMember member : gymMembers) {
+                                                writer.write("ID: " + member.getId() + "\n");
+                                                writer.write("Name: " + member.getName() + "\n");
+                                                writer.write("Location: " + member.getLocation() + "\n");
+                                                writer.write("Phone: " + member.getPhone() + "\n");
+                                                writer.write("Email: " + member.getEmail() + "\n");
+                                                writer.write("Gender: " + member.getGender() + "\n");
+                                                writer.write("DOB: " + member.getDOB() + "\n");
+                                                writer.write("Start Date: " + member.getMembershipStartDate() + "\n");
+                                                writer.write("Attendance: " + member.getAttendance() + "\n");
+                                                writer.write("Loyalty Points: " + member.getLoyaltyPoints() + "\n");
+                                                writer.write("Active Status: "
+                                                                + (member.isActiveStatus() ? "Active" : "Inactive")
+                                                                + "\n");
+
+                                                // Check if member is regular or premium
+                                                if (member instanceof RegularMember) {
+                                                        RegularMember r = (RegularMember) member;
+                                                        writer.write("Referral Source: " + r.getReferralSource()
+                                                                        + "\n");
+                                                        writer.write("Plan: " + r.getPlan() + "\n");
+                                                        writer.write("Price: " + r.getPrice() + "\n");
+                                                        writer.write("Type: Regular Member\n");
+                                                } else if (member instanceof PremiumMember) {
+                                                        PremiumMember p = (PremiumMember) member;
+                                                        writer.write("Trainer Name: " + p.getPersonalTrainer() + "\n");
+                                                        writer.write("Discount: " + p.getDiscountAmount() + "%\n");
+                                                        writer.write("Price: " + p.getPremiumCharge() + "\n");
+                                                        writer.write("Type: Premium Member\n");
+                                                }
+                                                writer.write("------------------------\n");
+                                        }
+                                        JOptionPane.showMessageDialog(frame,
+                                                        "Data successfully saved to gym_members.txt!", "Success",
+                                                        JOptionPane.INFORMATION_MESSAGE);
+                                } catch (IOException ex) {
+                                        JOptionPane.showMessageDialog(frame, "Error saving file: " + ex.getMessage(),
+                                                        "Error", JOptionPane.ERROR_MESSAGE);
+                                        System.err.println("Error saving file: " + ex.getMessage());
+                                }
+                        }
+                });
