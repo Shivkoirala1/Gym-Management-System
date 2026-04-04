@@ -496,3 +496,127 @@ public class GymGui {
                                 }
                         }
                 });
+
+                // Add components to panel1
+                panel1.add(Label);
+                panel1.add(tField1);
+                panel1.add(Label2);
+                panel1.add(tField2);
+                panel1.add(Label3);
+                panel1.add(tField3);
+                panel1.add(Label4);
+                panel1.add(tField4);
+                panel1.add(Label5);
+                panel1.add(tField5);
+                panel1.add(genderLabel);
+                panel1.add(maleRadioButton);
+                panel1.add(femaleRadioButton);
+                panel1.add(dobLabel);
+                panel1.add(dobYearComboBox);
+                panel1.add(dobMonthComboBox);
+                panel1.add(dobDayComboBox);
+                panel1.add(startLabel);
+                panel1.add(startYear);
+                panel1.add(startMonth);
+                panel1.add(startDate);
+                panel1.add(saveToFileBtn);
+                panel1.add(readFromFileBtn);
+                panel1.add(revertPremiumMemberBtn);
+                panel1.add(calculateDiscountBtn);
+                panel1.add(upgradePlanBtn);
+                panel1.add(payDueAmountBtn);
+
+                // Panel 2: Membership & Plan Details
+                JPanel panel2 = new JPanel();
+                panel2.setBounds(480, 20, 620, 550);
+                panel2.setLayout(null);
+
+                // UI Components for Panel 2
+                JLabel referralLabel = new JLabel("Referral Source:");
+                referralLabel.setBounds(10, 20, 100, 25);
+                JTextField referralField = new JTextField();
+                referralField.setBounds(120, 20, 200, 25);
+
+                JLabel paidAmountLabel = new JLabel("Paid Amount:");
+                paidAmountLabel.setBounds(10, 60, 100, 25);
+                JTextField paidAmountField = new JTextField();
+                paidAmountField.setBounds(120, 60, 200, 25);
+
+                JLabel removalReasonLabel = new JLabel("Removal Reason:");
+                removalReasonLabel.setBounds(10, 100, 100, 25);
+                JTextField removalReasonField = new JTextField();
+                removalReasonField.setBounds(120, 100, 200, 25);
+
+                JLabel trainerLabel = new JLabel("Trainer Name:");
+                trainerLabel.setBounds(10, 140, 100, 25);
+                JTextField trainerNameField = new JTextField();
+                trainerNameField.setBounds(120, 140, 200, 25);
+
+                JLabel planLabel = new JLabel("Plan:");
+                planLabel.setBounds(10, 180, 100, 25);
+
+                JComboBox<String> planComboBox = new JComboBox<>(new String[] { "Basic", "Standard", "Deluxe" });
+                planComboBox.setBounds(120, 180, 200, 25);
+
+                // Non-editable fields
+                JLabel regularPriceLabel = new JLabel("Regular Price:");
+                regularPriceLabel.setBounds(10, 220, 100, 25);
+                JTextField regularPriceField = new JTextField("6500");
+                regularPriceField.setBounds(120, 220, 200, 25);
+                regularPriceField.setEditable(false);
+
+                JLabel premiumPriceLabel = new JLabel("Premium Price:");
+                premiumPriceLabel.setBounds(10, 260, 100, 25);
+                JTextField premiumPriceField = new JTextField("50000");
+                premiumPriceField.setBounds(120, 260, 200, 25);
+                premiumPriceField.setEditable(false);
+
+                JLabel discountLabel = new JLabel("Discount:");
+                discountLabel.setBounds(10, 300, 100, 25);
+                JTextField discountField = new JTextField("10%");
+                discountField.setBounds(120, 300, 200, 25);
+                discountField.setEditable(false);
+
+                /**
+                 * Button to add a regular gym member.
+                 * takes input like name, phone, email and adds as a regular gym member.
+                 * also sees exceptions, shows messages and perform taks.
+                 */
+
+                JButton regularBtn = new JButton("Add Regular Member");
+                regularBtn.setBounds(10, 340, 200, 30);
+
+                regularBtn.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent e) {
+                                try {
+
+                                        String idText = tField1.getText().trim();
+
+                                        if (idText.isEmpty()) {
+                                                throw new IllegalArgumentException("ID is mandatory.");
+                                        }
+
+                                        int aMemberId;
+                                        try {
+                                                aMemberId = Integer.parseInt(idText);
+                                        } catch (NumberFormatException ex) {
+                                                throw new IllegalArgumentException("ID must be a number");
+                                        }
+
+                                        for (GymMember member : gymMembers) {
+                                                if (member.getId() == aMemberId) {
+                                                        throw new IllegalArgumentException(
+                                                                        "ID you entered already exists");
+                                                }
+                                        }
+
+                                        String name = tField2.getText().trim();
+                                        if (name.isEmpty()) {
+                                                throw new IllegalArgumentException("Name cannot be empty.");
+                                        }
+
+                                        // Validate that the name contains only letters and spaces
+                                        if (!name.matches("[A-Za-z ]+")) {
+                                                throw new IllegalArgumentException(
+                                                                "Invalid Name: Please Enter a valid Name");
+   
