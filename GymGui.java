@@ -358,5 +358,34 @@ public class GymGui {
                                                         JOptionPane.ERROR_MESSAGE);
                                 }
                         }
+                });
+
+                // Upgrade Plan Button
+                JButton upgradePlanBtn = new JButton("Upgrade Plan");
+                upgradePlanBtn.setBounds(10, 420, 200, 30);
+                upgradePlanBtn.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                                String input = JOptionPane.showInputDialog(frame, "Enter Regular Member ID:",
+                                                "Upgrade Plan", JOptionPane.QUESTION_MESSAGE);
+
+                                // Validate user input
+                                if (input == null || input.trim().isEmpty()) {
+                                        JOptionPane.showMessageDialog(frame, "Please enter a valid Member ID.", "Error",
+                                                        JOptionPane.ERROR_MESSAGE);
+                                        return;
+                                }
+
+                                try {
+                                        int memberId = Integer.parseInt(input); // Convert ID safely
+
+                                        // Search for the regular member
+                                        RegularMember foundMember = null;
+                                        for (GymMember member : gymMembers) {
+                                                if (member.getId() == memberId && member instanceof RegularMember) {
+                                                        foundMember = (RegularMember) member;
+                                                        break;
+                                                }
+                                        }
 
      
