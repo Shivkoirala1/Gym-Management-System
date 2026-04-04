@@ -302,4 +302,61 @@ public class GymGui {
                         }
                 });
 
-               
+                // Calculate Discount Button
+                JButton calculateDiscountBtn = new JButton("Calculate Discount");
+                calculateDiscountBtn.setBounds(220, 380, 200, 30);
+                calculateDiscountBtn.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                                String input = JOptionPane.showInputDialog(frame, "Enter Premium Member ID:",
+                                                "Calculate Discount", JOptionPane.QUESTION_MESSAGE);
+
+                                // Validate user input
+                                if (input == null || input.trim().isEmpty()) {
+                                        JOptionPane.showMessageDialog(frame, "Please enter a valid Member ID.", "Error",
+                                                        JOptionPane.ERROR_MESSAGE);
+                                        return;
+                                }
+
+                                try {
+                                        int memberId = Integer.parseInt(input); // Convert ID safely
+
+                                        // Search for the premium member
+                                        PremiumMember foundMember = null;
+                                        for (GymMember member : gymMembers) {
+                                                if (member.getId() == memberId && member instanceof PremiumMember) {
+                                                        foundMember = (PremiumMember) member;
+                                                        break;
+                                                }
+                                        }
+
+                                        // Handle member not found
+                                        if (foundMember == null) {
+                                                throw new IllegalArgumentException("Premium Member ID not found.");
+                                        }
+
+                                        // Check if full payment has been made
+                                        if (!foundMember.isFullPayment()) {
+                                                JOptionPane.showMessageDialog(frame,
+                                                                "Full payment required before calculating discount.",
+                                                                "Error", JOptionPane.ERROR_MESSAGE);
+                                                return;
+                                        }
+
+                                        // Calculate discount
+                                        String discountAmount = foundMember.calculateDiscount();
+                                        JOptionPane.showMessageDialog(frame,
+                                                        "Discount successfully applied! You saved: $" + discountAmount,
+                                                        "Discount Calculation", JOptionPane.INFORMATION_MESSAGE);
+
+                                } catch (NumberFormatException ex) {
+                                        JOptionPane.showMessageDialog(frame, "Member ID must be a number.", "Error",
+                                                        JOptionPane.ERROR_MESSAGE);
+                                } catch (IllegalArgumentException ex) {
+                                        System.err.println("Error: " + ex.getMessage()); // Logs error for debugging
+                                        JOptionPane.showMessageDialog(frame, ex.getMessage(), "Error",
+                                                        JOptionPane.ERROR_MESSAGE);
+                                }
+                        }
+
+     
