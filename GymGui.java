@@ -388,4 +388,111 @@ public class GymGui {
                                                 }
                                         }
 
-     
+                                        // Handle member not found
+                                        if (foundMember == null) {
+                                                throw new IllegalArgumentException("Regular Member ID not found.");
+                                        }
+
+                                        // Check if member is eligible for upgrade
+                                        if (!foundMember.isEligibleForUpgrade()) {
+                                                JOptionPane.showMessageDialog(frame,
+                                                                "Not eligible for plan upgrade. Attendance limit not reached.",
+                                                                "Error", JOptionPane.ERROR_MESSAGE);
+                                                return;
+                                        }
+
+                                        // Prompt user to select a new plan
+                                        String[] planOptions = { "Standard", "Deluxe" };
+                                        String selectedPlan = (String) JOptionPane.showInputDialog(frame,
+                                                        "Select new plan:", "Upgrade Plan",
+                                                        JOptionPane.QUESTION_MESSAGE, null, planOptions,
+                                                        planOptions[0]);
+
+                                        // Validate plan selection
+                                        if (selectedPlan == null || selectedPlan.trim().isEmpty()) {
+                                                JOptionPane.showMessageDialog(frame, "Invalid plan selection.", "Error",
+                                                                JOptionPane.ERROR_MESSAGE);
+                                                return;
+                                        }
+
+                                        // Upgrade the plan
+                                        String result = foundMember.upgradePlan(selectedPlan);
+                                        JOptionPane.showMessageDialog(frame, result, "Upgrade Result",
+                                                        JOptionPane.INFORMATION_MESSAGE);
+
+                                } catch (NumberFormatException ex) {
+                                        JOptionPane.showMessageDialog(frame, "Member ID must be a number.", "Error",
+                                                        JOptionPane.ERROR_MESSAGE);
+                                } catch (IllegalArgumentException ex) {
+                                        System.err.println("Error: " + ex.getMessage()); // Logs error for debugging
+                                        JOptionPane.showMessageDialog(frame, ex.getMessage(), "Error",
+                                                        JOptionPane.ERROR_MESSAGE);
+                                }
+                        }
+                });
+
+                // Pay Due Amount Button
+                JButton payDueAmountBtn = new JButton("Pay Due Amount");
+                payDueAmountBtn.setBounds(220, 420, 200, 30);
+                payDueAmountBtn.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                                String input = JOptionPane.showInputDialog(frame, "Enter Premium Member ID:",
+                                                "Pay Due Amount", JOptionPane.QUESTION_MESSAGE);
+
+                                // Validate user input
+                                if (input == null || input.trim().isEmpty()) {
+                                        JOptionPane.showMessageDialog(frame, "Please enter a valid Member ID.", "Error",
+                                                        JOptionPane.ERROR_MESSAGE);
+                                        return;
+                                }
+
+                                try {
+                                        int memberId = Integer.parseInt(input); // Convert ID safely
+
+                                        // Search for the premium member
+                                        PremiumMember foundMember = null;
+                                        for (GymMember member : gymMembers) {
+                                                if (member.getId() == memberId && member instanceof PremiumMember) {
+                                                        foundMember = (PremiumMember) member;
+                                                        break;
+                                                }
+                                        }
+
+                                        // Handle member not found
+                                        if (foundMember == null) {
+                                                throw new IllegalArgumentException("Premium Member ID not found.");
+                                        }
+
+                                        // Ask user for payment amount
+                                        String amountInput = JOptionPane.showInputDialog(frame, "Enter amount to pay:",
+                                                        "Pay Due Amount", JOptionPane.QUESTION_MESSAGE);
+                                        if (amountInput == null || amountInput.trim().isEmpty()) {
+                                                JOptionPane.showMessageDialog(frame, "Payment amount cannot be empty.",
+                                                                "Error", JOptionPane.ERROR_MESSAGE);
+                                                return;
+                                        }
+
+                                        double amount = Double.parseDouble(amountInput);
+                                        if (amount <= 0) {
+                                                JOptionPane.showMessageDialog(frame, "Payment amount must be positive.",
+                                                                "Error", JOptionPane.ERROR_MESSAGE);
+                                                return;
+                                        }
+
+                                        // Pay due amount
+                                        String result = foundMember.payDueAmount(amount);
+                                        JOptionPane.showMessageDialog(frame, result, "Payment Result",
+                                                        JOptionPane.INFORMATION_MESSAGE);
+
+                                } catch (NumberFormatException ex) {
+                                        JOptionPane.showMessageDialog(frame,
+                                                        "Member ID and payment amount must be numbers.", "Error",
+                                                        JOptionPane.ERROR_MESSAGE);
+                                } catch (IllegalArgumentException ex) {
+                                        System.err.println("Error: " + ex.getMessage()); // Logs error for debugging
+                                        JOptionPane.showMessageDialog(frame, ex.getMessage(), "Error",
+                                                        JOptionPane.ERROR_MESSAGE);
+                                }
+                        }
+                });
