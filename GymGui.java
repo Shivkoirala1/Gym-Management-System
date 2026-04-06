@@ -497,7 +497,7 @@ public class GymGui {
                         }
                 });
 
-                // Add components to panel1
+                // Add components to panel 1
                 panel1.add(Label);
                 panel1.add(tField1);
                 panel1.add(Label2);
@@ -526,6 +526,8 @@ public class GymGui {
                 panel1.add(upgradePlanBtn);
                 panel1.add(payDueAmountBtn);
 
+
+                
                 // Panel 2: Membership & Plan Details
                 JPanel panel2 = new JPanel();
                 panel2.setBounds(480, 20, 620, 550);
@@ -577,11 +579,14 @@ public class GymGui {
                 discountField.setBounds(120, 300, 200, 25);
                 discountField.setEditable(false);
 
+                
                 /**
                  * Button to add a regular gym member.
                  * takes input like name, phone, email and adds as a regular gym member.
                  * also sees exceptions, shows messages and perform taks.
                  */
+
+                
 
                 JButton regularBtn = new JButton("Add Regular Member");
                 regularBtn.setBounds(10, 340, 200, 30);
