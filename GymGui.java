@@ -711,4 +711,558 @@ public class GymGui {
                         }
                 });
 
-               
+                /**
+                 * Button to add a premium gym member.
+                 * takes input as regular and other function same as addregularmember button but
+                 * this adds premium member
+                 */
+
+                JButton premiumBtn = new JButton("Add Premium Member");
+                premiumBtn.setBounds(220, 340, 200, 30);
+
+                premiumBtn.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent e) {
+                                try {
+
+                                        String idText = tField1.getText().trim();
+                                        if (idText.isEmpty()) {
+                                                throw new IllegalArgumentException("Member ID cannot be empty");
+                                        }
+
+                                        int memberId;
+                                        try {
+                                                memberId = Integer.parseInt(idText);
+                                        } catch (NumberFormatException ex) {
+                                                throw new IllegalArgumentException("Member ID must be a number");
+                                        }
+
+                                        // Check for duplicate ID
+                                        for (GymMember member : gymMembers) {
+                                                if (member.getId() == memberId) {
+                                                        throw new IllegalArgumentException("Member ID already exists");
+                                                }
+                                        }
+
+                                        String name = tField2.getText().trim();
+                                        if (name.isEmpty()) {
+                                                throw new IllegalArgumentException("Name cannot be empty.");
+                                        }
+
+                                        // Validate that the name contains only letters and spaces
+                                        if (!name.matches("[A-Za-z ]+")) {
+                                                throw new IllegalArgumentException(
+                                                                "Invalid Name: Please Enter a valid Name");
+                                        }
+
+                                        String phone = tField4.getText().trim();
+                                        if (phone.isEmpty()) {
+                                                throw new IllegalArgumentException("Phone number cannot be empty.");
+                                        }
+
+                                        // Ensure all characters are digits and check length
+                                        try {
+                                                Long.parseLong(phone); // Converts to number to verify digit-only input
+                                                if (phone.length() < 8 || phone.length() > 15) {
+                                                        throw new IllegalArgumentException(
+                                                                        "Invalid Phone number: Please Enter a valid phone number .");
+                                                }
+                                        } catch (NumberFormatException ex) {
+                                                throw new IllegalArgumentException(
+                                                                "Invalid Phone Number: Phone number contain only digits.");
+                                        }
+
+                                        String email = tField5.getText().trim();
+
+                                        if (email.isEmpty()) {
+                                                throw new IllegalArgumentException("Email cannot be empty.");
+                                        }
+
+                                        // Basic email validation without regex
+                                        if (!email.contains("@") || !email.contains(".")) {
+                                                throw new IllegalArgumentException("Invalid email format.");
+                                        }
+
+                                        String personalTrainer = trainerNameField.getText().trim();
+
+                                        String gender = null;
+                                        if (maleRadioButton.isSelected()) {
+                                                gender = "Male";
+                                        } else if (femaleRadioButton.isSelected()) {
+                                                gender = "Female";
+                                        } else {
+                                                throw new IllegalArgumentException("Please select gender");
+                                        }
+
+                                        String dobLabel1 = dobYearComboBox.getSelectedItem() + "-" +
+                                                        dobMonthComboBox.getSelectedItem() + "-" +
+                                                        dobDayComboBox.getSelectedItem();
+
+                                        String membershipStartDate = startDate.getSelectedItem() + "-" +
+                                                        startMonth.getSelectedItem() + "-" +
+                                                        startDate.getSelectedItem();
+
+                                        PremiumMember newMember = new PremiumMember(
+                                                        memberId,
+                                                        name,
+                                                        "", // location (empty if not collected)
+                                                        phone,
+                                                        email,
+                                                        gender,
+                                                        dobLabel1,
+                                                        membershipStartDate,
+                                                        personalTrainer);
+
+                                        newMember.markAttendance();
+                                        gymMembers.add(newMember);
+
+                                        JOptionPane.showMessageDialog(frame,
+                                                        "Premium Member Added Successfully!",
+                                                        "Success",
+                                                        JOptionPane.INFORMATION_MESSAGE);
+
+                                        // clearFields();
+
+                                } catch (IllegalArgumentException ex) {
+                                        JOptionPane.showMessageDialog(frame,
+                                                        ex.getMessage(),
+                                                        "Input Error",
+                                                        JOptionPane.ERROR_MESSAGE);
+                                }
+                        }
+                });
+                /**
+                 * Button to activate an existing member’s membership.
+                 * When clicked, shows a dialog box asking for member ID.
+                 * Checks if the ID is a valid number and exists in the gymMembers list.
+                 * If member is found, activates their membership and shows success popup.
+                 * If not found or ID is wrong, shows an error popup with the message.
+                 */
+
+                JButton activateBtn = new JButton("Activate Membership");
+                activateBtn.setBounds(10, 380, 200, 30);
+                activateBtn.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent e) {
+                                String idText = JOptionPane.showInputDialog(frame, "Please Enter your id number.",
+                                                "Activate", JOptionPane.QUESTION_MESSAGE);
+                                if (gymMembers == null) {
+                                        JOptionPane.showMessageDialog(frame, "Member list is unavailable.", "Error",
+                                                        JOptionPane.ERROR_MESSAGE);
+                                        return;
+                                }
+                                try {
+                                        int memberId;
+                                        if (idText == null || idText.trim().isEmpty()) {
+                                                JOptionPane.showMessageDialog(frame, "Please enter a valid Member ID.",
+                                                                "Error", JOptionPane.ERROR_MESSAGE);
+                                                return;
+                                        }
+                                        try {
+                                                memberId = Integer.parseInt(idText);
+                                        } catch (NumberFormatException ex) {
+                                                throw new IllegalArgumentException("Member ID must be a number");
+                                        }
+
+                                        for (GymMember member : gymMembers) {
+                                                if (member.getId() == memberId) {
+                                                        int confirm = JOptionPane.showConfirmDialog(frame,
+                                                                        "Activate membership for ID: " + memberId + "?",
+                                                                        "Confirm", JOptionPane.YES_NO_OPTION);
+
+                                                        if (confirm != JOptionPane.YES_OPTION) {
+                                                                return;
+                                                        }
+                                                        member.activateMembership();
+                                                        JOptionPane.showMessageDialog(frame,
+                                                                        "Membership activated for ID: " + memberId,
+                                                                        "Success", JOptionPane.INFORMATION_MESSAGE);
+                                                        return;
+                                                }
+                                        }
+
+                                        throw new IllegalArgumentException("Member ID not found");
+
+                                } catch (IllegalArgumentException ex) {
+                                        System.err.println("Error: " + ex.getMessage()); // Logs error message
+                                        JOptionPane.showMessageDialog(frame, ex.getMessage(), "Error",
+                                                        JOptionPane.ERROR_MESSAGE);
+                                }
+                        }
+                });
+                /**
+                 * Button to deactivate a member's membership.
+                 * Some how similar to activate button but this is used to deactivate the
+                 * existing member.
+                 */
+
+                JButton deactivateBtn = new JButton("Deactivate Membership");
+                deactivateBtn.setBounds(220, 380, 200, 30);
+
+                deactivateBtn.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent e) {
+                                // Get input from dialog
+                                String idText = JOptionPane.showInputDialog(frame, "Enter the ID number.", "Deactivate",
+                                                JOptionPane.QUESTION_MESSAGE);
+
+                                // Check if gymMembers list is available
+                                if (gymMembers == null) {
+                                        JOptionPane.showMessageDialog(frame, "Member list is unavailable.", "Error",
+                                                        JOptionPane.ERROR_MESSAGE);
+                                        return;
+                                }
+
+                                // Validate user input
+                                if (idText == null || idText.trim().isEmpty()) {
+                                        JOptionPane.showMessageDialog(frame, "Please enter a valid Member ID.", "Error",
+                                                        JOptionPane.ERROR_MESSAGE);
+                                        return;
+                                }
+
+                                try {
+                                        int memberId = Integer.parseInt(idText); // Convert ID to integer
+
+                                        // Search for the member
+                                        for (GymMember member : gymMembers) {
+                                                if (member.getId() == memberId) {
+                                                        // Confirm deactivation
+                                                        int confirm = JOptionPane.showConfirmDialog(frame,
+                                                                        "Deactivate membership for ID: " + memberId
+                                                                                        + "?",
+                                                                        "Confirm", JOptionPane.YES_NO_OPTION);
+
+                                                        if (confirm != JOptionPane.YES_OPTION) {
+                                                                return;
+                                                        }
+
+                                                        // Deactivate membership
+                                                        member.decactivateMembership(); // Fixed spelling from
+                                                                                        // `decactivateMembership()`
+                                                        JOptionPane.showMessageDialog(frame,
+                                                                        "Membership deactivated for ID: " + memberId,
+                                                                        "Success", JOptionPane.INFORMATION_MESSAGE);
+                                                        return;
+                                                }
+                                        }
+
+                                        // If member ID not found
+                                        throw new IllegalArgumentException("Member ID not found");
+
+                                } catch (NumberFormatException ex) {
+                                        JOptionPane.showMessageDialog(frame, "ID should be a number", "Error",
+                                                        JOptionPane.ERROR_MESSAGE);
+                                } catch (IllegalArgumentException ex) {
+                                        System.err.println("Error: " + ex.getMessage()); // Log error
+                                        JOptionPane.showMessageDialog(frame, ex.getMessage(), "Error",
+                                                        JOptionPane.ERROR_MESSAGE);
+                                }
+                        }
+                });
+                /**
+                 * Button to mark attendance for a member.
+                 * When clicked, it asks for the member ID in a popup.
+                 * then it checks that the ID field is not empty and is a number.
+                 * Then it finds the member with that ID from the gymMembers list.
+                 * If the member is found and their membership is active, it marks attendance
+                 * and shows a success message.
+                 * If the member is not found or their membership is inactive, it shows an error
+                 * message.
+                 */
+
+                JButton markAttendanceBtn = new JButton("Mark Attendance");
+                markAttendanceBtn.setBounds(10, 420, 200, 30);
+
+                markAttendanceBtn.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent e) {
+                                // Get input from dialog
+                                String idText = JOptionPane.showInputDialog(frame, "Please Enter Your ID:",
+                                                "Mark Attendance", JOptionPane.QUESTION_MESSAGE);
+
+                                // Check if gymMembers list is available
+                                if (gymMembers == null) {
+                                        JOptionPane.showMessageDialog(frame, "Member list is unavailable.", "Error",
+                                                        JOptionPane.ERROR_MESSAGE);
+                                        return;
+                                }
+
+                                // Validate input
+                                if (idText == null || idText.trim().isEmpty()) {
+                                        JOptionPane.showMessageDialog(frame, "Please enter a valid Member ID.", "Error",
+                                                        JOptionPane.ERROR_MESSAGE);
+                                        return;
+                                }
+
+                                try {
+                                        int memberId = Integer.parseInt(idText); // Parse ID
+
+                                        // Search for the member
+                                        GymMember selectedMember = null;
+                                        for (GymMember member : gymMembers) {
+                                                if (member.getId() == memberId) {
+                                                        selectedMember = member;
+                                                        break;
+                                                }
+                                        }
+
+                                        // Handle missing member
+                                        if (selectedMember == null) {
+                                                throw new IllegalArgumentException("Member ID not found.");
+                                        }
+
+                                        // Check membership status
+                                        if (!selectedMember.isActiveStatus()) {
+                                                throw new IllegalArgumentException(
+                                                                "Cannot mark attendance, Member ID is not active.");
+                                        }
+
+                                        // Confirm attendance marking
+                                        int confirm = JOptionPane.showConfirmDialog(frame,
+                                                        "Mark attendance for Member ID: " + memberId + "?",
+                                                        "Confirm", JOptionPane.YES_NO_OPTION);
+
+                                        if (confirm != JOptionPane.YES_OPTION) {
+                                                return;
+                                        }
+
+                                        // Mark attendance
+                                        selectedMember.markAttendance();
+                                        JOptionPane.showMessageDialog(frame,
+                                                        "Attendance successfully marked for Member ID: " + memberId,
+                                                        "Success", JOptionPane.INFORMATION_MESSAGE);
+
+                                } catch (NumberFormatException ex) {
+                                        JOptionPane.showMessageDialog(frame, "Member ID must be a number.", "Error",
+                                                        JOptionPane.ERROR_MESSAGE);
+                                } catch (IllegalArgumentException ex) {
+                                        System.err.println("Error: " + ex.getMessage()); // Logs error
+                                        JOptionPane.showMessageDialog(frame, ex.getMessage(), "Error",
+                                                        JOptionPane.ERROR_MESSAGE);
+                                }
+                        }
+                });
+
+                /**
+                 * Button to revert a Regular Member who was removed.
+                 * It takes the member ID and removal reason, checks if the member exists and is
+                 * a RegularMember.
+                 * If found, it reverts the member by calling revertRegularMember().
+                 * Shows success or error message based on the outcome.
+                 */
+
+                JButton revertRegularMemberBtn = new JButton("Revert Regular Member");
+                revertRegularMemberBtn.setBounds(220, 420, 200, 30);
+
+                revertRegularMemberBtn.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent e) {
+                                // Get input from dialog
+                                String input = JOptionPane.showInputDialog(frame, "Enter Member ID:",
+                                                "Revert Regular Member", JOptionPane.QUESTION_MESSAGE);
+
+                                // Validate input
+                                if (input == null || input.trim().isEmpty()) {
+                                        JOptionPane.showMessageDialog(frame, "Please enter a valid Member ID.", "Error",
+                                                        JOptionPane.ERROR_MESSAGE);
+                                        return;
+                                }
+
+                                // Validate gymMembers list
+                                if (gymMembers == null) {
+                                        JOptionPane.showMessageDialog(frame, "Member list is unavailable.", "Error",
+                                                        JOptionPane.ERROR_MESSAGE);
+                                        return;
+                                }
+
+                                try {
+                                        int memberId = Integer.parseInt(input); // Convert ID safely
+
+                                        // Validate removal reason
+                                        String removalReason = removalReasonField.getText().trim();
+                                        if (removalReason == null || removalReason.trim().isEmpty()) {
+                                                JOptionPane.showMessageDialog(frame, "Removal reason cannot be empty.",
+                                                                "Error", JOptionPane.ERROR_MESSAGE);
+                                                return;
+                                        }
+
+                                        // Search for the regular member
+                                        RegularMember foundMember = null;
+                                        for (GymMember member : gymMembers) {
+                                                if (member.getId() == memberId && member instanceof RegularMember) {
+                                                        foundMember = (RegularMember) member;
+                                                        break;
+                                                }
+                                        }
+
+                                        // Handle member not found
+                                        if (foundMember == null) {
+                                                throw new IllegalArgumentException("Regular Member ID not found.");
+                                        }
+
+                                        // Revert member
+                                        foundMember.revertRegularMember(removalReason);
+
+                                        // Show success message
+                                        JOptionPane.showMessageDialog(frame,
+                                                        "Regular Member successfully reverted for Member ID: "
+                                                                        + memberId,
+                                                        "Reversion Complete", JOptionPane.INFORMATION_MESSAGE);
+
+                                } catch (NumberFormatException ex) {
+                                        JOptionPane.showMessageDialog(frame, "Member ID must be a number.", "Error",
+                                                        JOptionPane.ERROR_MESSAGE);
+                                } catch (IllegalArgumentException ex) {
+                                        System.err.println("Error: " + ex.getMessage()); // Logs error for debugging
+                                        JOptionPane.showMessageDialog(frame, ex.getMessage(), "Error",
+                                                        JOptionPane.ERROR_MESSAGE);
+                                }
+                        }
+                });
+                /**
+                 * Button display all the details of the members.
+                 * When clicked, the added member list is shown.
+                 * 
+                 */
+
+                JButton displayBtn = new JButton("Display");
+                displayBtn.setBounds(10, 460, 200, 30);
+                displayBtn.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                                // Validate gymMembers list before iterating
+                                if (gymMembers == null || gymMembers.isEmpty()) {
+                                        JOptionPane.showMessageDialog(frame, "No members to display.", "Error",
+                                                        JOptionPane.ERROR_MESSAGE);
+                                        return;
+                                }
+
+                                StringBuilder shivC = new StringBuilder();
+                                try {
+                                        for (GymMember member : gymMembers) {
+                                                shivC.append("ID: ").append(member.getId()).append("\n");
+                                                shivC.append("Name: ").append(member.getName()).append("\n");
+                                                shivC.append("Location: ").append(member.getLocation()).append("\n");
+                                                shivC.append("Phone: ").append(member.getPhone()).append("\n");
+                                                shivC.append("Email: ").append(member.getEmail()).append("\n");
+                                                shivC.append("Gender: ").append(member.getGender()).append("\n");
+                                                shivC.append("Start Date: ").append(member.getDOB()).append("\n");
+                                                shivC.append("Attendance: ").append(member.getAttendance())
+                                                                .append("\n");
+                                                shivC.append("Loyalty Points: ").append(member.getLoyaltyPoints())
+                                                                .append("\n");
+
+                                                if (member instanceof RegularMember) {
+                                                        RegularMember r = (RegularMember) member;
+                                                        shivC.append("Referral Source: ")
+                                                                        .append(member.getMembershipStartDate())
+                                                                        .append("\n");
+                                                        shivC.append("Plan: ").append(r.getPlan()).append("\n");
+                                                        shivC.append("Price: ").append(r.getPrice()).append("\n");
+                                                        shivC.append("Type: Regular Member").append("\n");
+                                                } else if (member instanceof PremiumMember) {
+                                                        PremiumMember p = (PremiumMember) member;
+                                                        shivC.append("Trainer Name: ").append(p.getPersonalTrainer())
+                                                                        .append("\n");
+                                                        shivC.append("Discount: ")
+                                                                        .append(p.isFullPayment()
+                                                                                        ? p.getDiscountAmount() + "%"
+                                                                                        : "No discount available")
+                                                                        .append("\n");
+                                                        shivC.append("Price: ").append(p.getPremiumCharge())
+                                                                        .append("\n");
+                                                        shivC.append("Type: Premium Member").append("\n");
+                                                }
+
+                                                shivC.append("------------------------\n");
+                                        }
+                                } catch (Exception ex) {
+                                        System.err.println("Error displaying member details: " + ex.getMessage());
+                                        JOptionPane.showMessageDialog(frame,
+                                                        "An unexpected error occurred while displaying members.",
+                                                        "Error", JOptionPane.ERROR_MESSAGE);
+                                        return;
+                                }
+
+                                // Display member details
+                                JOptionPane.showMessageDialog(frame, shivC.toString(), "Member Details",
+                                                JOptionPane.INFORMATION_MESSAGE);
+                        }
+                });
+                /**
+                 * Button to clear the datas entered in the text fields and all over the form.
+                 * it sets all the values ot "Null". not actually but we can understand in that
+                 * way
+                 */
+
+                JButton clearBtn = new JButton("Clear");
+                clearBtn.setBounds(220, 460, 200, 30);
+
+                clearBtn.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                                // Clear text fields
+                                tField1.setText("");
+                                tField2.setText("");
+                                tField3.setText("");
+                                tField4.setText("");
+                                tField5.setText("");
+                                referralField.setText("");
+                                paidAmountField.setText("");
+                                removalReasonField.setText("");
+                                trainerNameField.setText("");
+
+                                // Reset combo boxes to first index
+                                dobYearComboBox.setSelectedIndex(0);
+                                dobMonthComboBox.setSelectedIndex(0);
+                                dobDayComboBox.setSelectedIndex(0);
+                                startYear.setSelectedIndex(0);
+                                startMonth.setSelectedIndex(0);
+                                startDate.setSelectedIndex(0);
+                                planComboBox.setSelectedIndex(0);
+
+                                // Clear radio button selection
+                                genderGroup.clearSelection();
+
+                                // Clear prices & discount fields
+                                regularPriceField.setText("6500");
+                                premiumPriceField.setText("50000");
+                                discountField.setText("10%");
+                        }
+                });
+
+                // Add components to panel2
+                panel2.add(referralLabel);
+                panel2.add(referralField);
+                panel2.add(paidAmountLabel);
+                panel2.add(paidAmountField);
+                panel2.add(removalReasonLabel);
+                panel2.add(removalReasonField);
+                panel2.add(trainerLabel);
+                panel2.add(trainerNameField);
+                panel2.add(planLabel);
+                panel2.add(planComboBox);
+                panel2.add(regularPriceLabel);
+                panel2.add(regularPriceField);
+                panel2.add(premiumPriceLabel);
+                panel2.add(premiumPriceField);
+                panel2.add(discountLabel);
+                panel2.add(discountField);
+                panel2.add(regularBtn);
+                panel2.add(premiumBtn);
+                panel2.add(activateBtn);
+                panel2.add(deactivateBtn);
+                panel2.add(markAttendanceBtn);
+                panel2.add(revertRegularMemberBtn);
+                panel2.add(displayBtn);
+                panel2.add(clearBtn);
+
+                // Add both panels to the frame
+                frame.add(panel1);
+                frame.add(panel2);
+
+                // Set the frame visible
+                frame.setVisible(true);
+                frame.setResizable(false);
+        }
+
+        public static void main(String[] args) {
+                // Create the GymMemberForm instance which will setup the JFrame
+                SwingUtilities.invokeLater(() -> new GymGui());
+        }
+}
