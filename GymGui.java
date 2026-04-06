@@ -619,4 +619,96 @@ public class GymGui {
                                         if (!name.matches("[A-Za-z ]+")) {
                                                 throw new IllegalArgumentException(
                                                                 "Invalid Name: Please Enter a valid Name");
-   
+                                        }
+
+                                        String phone = tField4.getText().trim();
+
+                                        if (phone.isEmpty()) {
+                                                throw new IllegalArgumentException("Phone number cannot be empty.");
+                                        }
+
+                                        // Ensure all characters are digits and check length
+                                        try {
+                                                Long.parseLong(phone); // Converts to number to verify digit-only input
+                                                if (phone.length() < 8 || phone.length() > 15) {
+                                                        throw new IllegalArgumentException(
+                                                                        "Invalid Phone number: Please Enter a valid phone number .");
+                                                }
+                                        } catch (NumberFormatException ex) {
+                                                throw new IllegalArgumentException(
+                                                                "Invalid Phone Number: Phone number contain only digits.");
+                                        }
+
+                                        String email = tField5.getText().trim();
+
+                                        if (email.isEmpty()) {
+                                                throw new IllegalArgumentException("Email cannot be empty.");
+                                        }
+
+                                        // Basic email validation without regex
+                                        if (!email.contains("@") || !email.contains(".")) {
+                                                throw new IllegalArgumentException("Invalid email format.");
+                                        }
+
+                                        String referralSource = referralField.getText().trim();
+                                        if (referralSource.isEmpty()) {
+                                                throw new IllegalArgumentException(
+                                                                "Referral Source should must be entered");
+                                        }
+
+                                        String removalReason = removalReasonField.getText().trim();
+
+                                        String location = tField3.getText().trim();
+
+                                        String gender = null;
+                                        if (maleRadioButton.isSelected()) {
+                                                gender = "Male";
+                                        } else if (femaleRadioButton.isSelected()) {
+                                                gender = "Female";
+                                        } else {
+                                                throw new IllegalArgumentException("Selection of gender is mandatory");
+                                        }
+
+                                        if (dobYearComboBox.getSelectedItem() == null ||
+                                                        dobMonthComboBox.getSelectedItem() == null ||
+                                                        dobDayComboBox.getSelectedItem() == null) {
+                                                throw new IllegalArgumentException(
+                                                                "Please select a valid date of birth.");
+                                        }
+
+                                        String membershipStartDate = startYear.getSelectedItem() + "-" +
+                                                        startMonth.getSelectedItem() + "-" +
+                                                        startDate.getSelectedItem();
+                                        RegularMember newMember = new RegularMember(
+                                                        aMemberId,
+                                                        name,
+                                                        location,
+                                                        phone,
+                                                        email,
+                                                        gender,
+                                                        // dobLabel,
+                                                        membershipStartDate,
+                                                        referralSource,
+                                                        removalReason);
+
+                                        newMember.markAttendance();
+                                        gymMembers.add(newMember);
+
+                                        JOptionPane.showMessageDialog(frame,
+                                                        "Regular Member Added Successfully!",
+
+                                                        "Success",
+                                                        JOptionPane.INFORMATION_MESSAGE);
+
+                                        // clearFields();
+
+                                } catch (IllegalArgumentException ex) {
+                                        JOptionPane.showMessageDialog(frame,
+                                                        ex.getMessage(),
+                                                        "Input Error",
+                                                        JOptionPane.ERROR_MESSAGE);
+                                }
+                        }
+                });
+
+               
