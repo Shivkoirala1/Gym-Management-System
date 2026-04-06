@@ -1,3 +1,6 @@
+//Some important imports for the GymGui
+
+
 import javax.swing.*;
 
 import java.awt.Dimension;
