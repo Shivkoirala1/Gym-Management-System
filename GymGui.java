@@ -109,6 +109,7 @@ public class GymGui {
                                                 "1956",
                                                 "1955", "1954", "1953", "1952", "1951", "1950"
                                 });
+                
                 dobYearComboBox.setBounds(120, 260, 60, 25);
 
                 JComboBox<String> dobMonthComboBox = new JComboBox<>(
@@ -145,6 +146,7 @@ public class GymGui {
                                                 "1956",
                                                 "1955", "1954", "1953", "1952", "1951", "1950"
                                 });
+                
                 startYear.setBounds(120, 300, 60, 25);
 
                 JComboBox<String> startMonth = new JComboBox<>(new String[] { "Month", "January", "February", "March",
